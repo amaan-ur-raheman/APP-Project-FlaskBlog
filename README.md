@@ -54,21 +54,6 @@ A simple blog application built with Flask, allowing users to create, edit, and 
 6. Access the application at:
    http://127.0.0.1:5000/
 
-## Project Structure
-
-Flask Blog/
-├── flaskblog/
-│ ├── **init**.py # Application factory and configurations
-│ ├── models.py # Database models
-│ ├── routes.py # Application routes
-│ ├── templates/ # HTML templates
-│ ├── static/ # Static files (CSS, JS, images)
-│ └── forms.py # Flask-WTF forms
-├── migrations/ # Database migrations
-├── venv/ # Virtual environment
-├── requirements.txt # Python dependencies
-├── [README.md](http://_vscodecontentref_/1) # Project documentation
-└── run.py # Entry point for the application
 
 ## Technologies Used
 
