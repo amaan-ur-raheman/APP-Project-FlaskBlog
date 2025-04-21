@@ -10,7 +10,6 @@ A simple blog application built with Flask, allowing users to create, edit, and 
 -   Responsive design with Bootstrap
 -   Dynamic navigation bar based on user authentication status
 -   Database integration with SQLAlchemy
--   Context processor for dynamic sidebar content (e.g., recent posts)
 
 ## Installation
 
