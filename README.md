@@ -54,7 +54,6 @@ A simple blog application built with Flask, allowing users to create, edit, and 
 6. Access the application at:
    http://127.0.0.1:5000/
 
-
 ## Technologies Used
 
     Flask: Web framework
@@ -70,3 +69,10 @@ A simple blog application built with Flask, allowing users to create, edit, and 
     Implement a search feature
     Add user profile pictures
     Enable pagination for posts
+
+## Made By
+
+    1. Abhijit Raut: 202301103115
+    2. Amaan Ur Raheman: 202301103120
+    3. Soham Vaidya: 202301103124
+    4. Aditya Lokhande: 202301103127
