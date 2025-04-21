@@ -50,5 +50,31 @@ class Post(db.Model):
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
+    # Relationship to track likes
+    likes = db.relationship('Like', backref='post', lazy=True)
+
     def __repr__(self):
         return f"Post('{self.title}', '{self.date}')"
+
+
+class Like(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+
+    def __repr__(self):
+        return f"Like('{self.user_id}', '{self.post_id}')"
+
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+
+    # Relationship to access the user who wrote the comment
+    author = db.relationship('User', backref='comments', lazy=True)
+
+    def __repr__(self):
+        return f"Comment('{self.content}', '{self.date_posted}')"
