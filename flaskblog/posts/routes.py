@@ -89,7 +89,7 @@ def like_post(post_id):
         # If the user already liked the post, remove the like
         db.session.delete(like)
         db.session.commit()
-        flash('You unliked the post.', 'info')
+        flash('You disliked the post.', 'info')
     else:
         # Otherwise, add a new like
         new_like = Like(user_id=current_user.id, post_id=post_id)
