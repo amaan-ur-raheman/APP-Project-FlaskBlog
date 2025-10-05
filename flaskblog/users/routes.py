@@ -160,7 +160,9 @@ def reset_token(token):
         token (str): The password reset token from the email link.
 
     Returns:
-        A rendered password reset form or a redirect to the login page.
+        A rendered password reset form, a redirect to the login page after a successful reset,
+        a redirect to the home page if the user is already authenticated, or a redirect back to
+        the password reset request page when the token is invalid or expired.
     """
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
