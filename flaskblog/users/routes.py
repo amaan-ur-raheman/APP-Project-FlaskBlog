@@ -130,7 +130,8 @@ def reset_request():
     receive a password reset link.
 
     Returns:
-        A rendered password reset request template or a redirect to the login page.
+        A rendered password reset request template, a redirect to the home page when the user is
+        already authenticated, or a redirect to the login page after sending the reset email.
     """
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
