@@ -11,6 +11,15 @@ posts = Blueprint("posts", __name__)
 @posts.route("/post/new", methods=["POST", "GET"])
 @login_required
 def new_post():
+    """
+    Renders the form to create a new post and handles form submission.
+
+    If the form is submitted and valid, a new post is created and saved to the
+    database. The user is then redirected to the home page.
+
+    Returns:
+        A rendered template for creating a new post or a redirect to the home page.
+    """
     form = PostForm()
     if form.validate_on_submit():
         post = Post(title=form.title.data, content=form.content.data, author=current_user)
@@ -21,14 +30,20 @@ def new_post():
     return render_template("create_post.html", title="New Post", form=form, legend="New Post")
 
 
-
-
 @posts.route("/post/<int:post_id>", methods=['GET', 'POST'])
 def post(post_id):
+    """
+    Displays a single post and handles new comments.
+
+    Args:
+        post_id (int): The ID of the post to display.
+
+    Returns:
+        A rendered template of the post page, including its content and comments.
+    """
     post = Post.query.get_or_404(post_id)
     form = CommentForm()
     if form.validate_on_submit():
-        # Correctly associate the comment with the current user
         comment = Comment(content=form.content.data, user_id=current_user.id, post_id=post.id)
         db.session.add(comment)
         db.session.commit()
@@ -38,11 +53,21 @@ def post(post_id):
     return render_template('post.html', title=post.title, post=post, form=form, comments=comments)
 
 
-
-
 @posts.route("/post/<int:post_id>/update", methods=["POST", "GET"])
 @login_required
 def update_post(post_id):
+    """
+    Renders the form to update an existing post and handles form submission.
+
+    The user must be the author of the post to update it. If the form is
+    submitted and valid, the post is updated in the database.
+
+    Args:
+        post_id (int): The ID of the post to update.
+
+    Returns:
+        A rendered template for updating a post or a redirect to the post page.
+    """
     post = Post.query.get_or_404(post_id)
 
     if post.author != current_user:
@@ -61,11 +86,21 @@ def update_post(post_id):
     return render_template("create_post.html", title="Update Post", form=form, legend="Update Post")
 
 
-
-
 @posts.route("/post/<int:post_id>/delete", methods=["POST"])
 @login_required
 def delete_post(post_id):
+    """
+    Deletes a specific post from the database.
+
+    The user must be the author of the post to delete it. This route only
+    accepts POST requests.
+
+    Args:
+        post_id (int): The ID of the post to delete.
+
+    Returns:
+        A redirect to the home page after deleting the post.
+    """
     post = Post.query.get_or_404(post_id)
 
     if post.author != current_user:
@@ -78,10 +113,21 @@ def delete_post(post_id):
     return redirect(url_for("main.home"))
 
 
-
 @posts.route("/post/<int:post_id>/like", methods=['POST'])
 @login_required
 def like_post(post_id):
+    """
+    Toggles the like status of a post for the current user.
+
+    If the user has already liked the post, the like is removed. Otherwise,
+    a new like is added.
+
+    Args:
+        post_id (int): The ID of the post to like or dislike.
+
+    Returns:
+        A redirect to the post page.
+    """
     post = Post.query.get_or_404(post_id)
     like = Like.query.filter_by(user_id=current_user.id, post_id=post_id).first()
 
