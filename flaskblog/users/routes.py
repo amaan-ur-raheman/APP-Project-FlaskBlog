@@ -11,6 +11,17 @@ users = Blueprint("users", __name__)
 
 @users.route("/register", methods=["POST", "GET"])
 def register():
+    """
+    Handles user registration.
+
+    If the user is already authenticated, they are redirected to the home page.
+    Otherwise, it processes the registration form. On successful submission,
+    a new user is created and saved to the database.
+
+    Returns:
+        A rendered registration template, a redirect to the home page when the user is already
+        authenticated, or a redirect to the login page after successful registration.
+    """
     if current_user.is_authenticated:
         return redirect(url_for("main.home"))
     form = RegistrationForm()
@@ -26,12 +37,22 @@ def register():
 
 @users.route("/login", methods=["POST", "GET"])
 def login():
+    """
+    Handles user login.
+
+    If the user is already authenticated, they are redirected to the home page.
+    Otherwise, it processes the login form. On successful validation, the user
+    is logged in and redirected to the home page or their intended destination.
+
+    Returns:
+        A rendered login template or a redirect to the home page.
+    """
     if current_user.is_authenticated:
         return redirect(url_for("main.home"))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        if user and bcrypt.check_password_hash(user.password, form.password.data):        
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for("main.home"))
@@ -42,6 +63,12 @@ def login():
 
 @users.route("/logout")
 def logout():
+    """
+    Logs out the current user.
+
+    Returns:
+        A redirect to the home page.
+    """
     logout_user()
     return redirect(url_for("main.home"))
 
@@ -49,6 +76,14 @@ def logout():
 @users.route("/account", methods=["POST", "GET"])
 @login_required
 def account():
+    """
+    Handles user account management.
+
+    Allows authenticated users to update their username, email, and profile picture.
+
+    Returns:
+        A rendered account template with the user's information.
+    """
     form = UpdateAccountForm()
     if form.validate_on_submit():
         if form.picture.data:
@@ -66,9 +101,17 @@ def account():
     return render_template("account.html", title="Account", image_file=image_file, form=form)
 
 
-
 @users.route("/user/<string:username>")
 def user_posts(username):
+    """
+    Displays all posts by a specific user.
+
+    Args:
+        username (str): The username of the user whose posts are to be displayed.
+
+    Returns:
+        A rendered template showing a paginated list of the user's posts.
+    """
     page = request.args.get('page', 1, type=int)
     user = User.query.filter_by(username=username).first_or_404()
     posts = Post.query.filter_by(author=user)\
@@ -77,9 +120,19 @@ def user_posts(username):
     return render_template('user_posts.html', title='Post By ' + user.username, posts=posts, user=user)
 
 
-
 @users.route("/reset_password", methods=["POST", "GET"])
 def reset_request():
+    """
+    Handles the request for a password reset email.
+
+    If the user is authenticated, they are redirected to the home page.
+    Otherwise, it processes a form where users can enter their email to
+    receive a password reset link.
+
+    Returns:
+        A rendered password reset request template, a redirect to the home page when the user is
+        already authenticated, or a redirect to the login page after sending the reset email.
+    """
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
     
@@ -94,11 +147,25 @@ def reset_request():
     return render_template("reset_request.html", form=form, title="Reset Password")
 
 
-
 @users.route("/reset_password/<token>", methods=["POST", "GET"])
 def reset_token(token):
+    """
+    Handles the password reset using a token.
+
+    If the user is authenticated, they are redirected to the home page.
+    Verifies the provided token and, if valid, allows the user to set a
+    new password.
+
+    Args:
+        token (str): The password reset token from the email link.
+
+    Returns:
+        A rendered password reset form, a redirect to the login page after a successful reset,
+        a redirect to the home page if the user is already authenticated, or a redirect back to
+        the password reset request page when the token is invalid or expired.
+    """
     if current_user.is_authenticated:
-        return redirect(url_for('main.home')) 
+        return redirect(url_for('main.home'))
     
     user = User.verify_reset_token(token)
 

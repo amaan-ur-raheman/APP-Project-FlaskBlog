@@ -18,9 +18,24 @@ migrate = Migrate()
 
 
 
-def create_app(config_class = Config):
+def create_app(config_class=Config):
+    """
+    Creates and configures an instance of the Flask application.
+
+    This function implements the application factory pattern, which allows for
+    the creation of multiple application instances with different configurations.
+    It initializes the database, bcrypt, login manager, mail, and migration
+    services, and registers all blueprints.
+
+    Args:
+        config_class (object): The configuration class to use for the application.
+                               Defaults to the `Config` class from `flaskblog.config`.
+
+    Returns:
+        Flask: A configured instance of the Flask application.
+    """
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config.from_object(config_class)
 
     db.init_app(app)
     bcrypt.init_app(app)
