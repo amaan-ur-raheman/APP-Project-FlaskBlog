@@ -19,7 +19,8 @@ def register():
     a new user is created and saved to the database.
 
     Returns:
-        A rendered registration template or a redirect to the login page.
+        A rendered registration template, a redirect to the home page when the user is already
+        authenticated, or a redirect to the login page after successful registration.
     """
     if current_user.is_authenticated:
         return redirect(url_for("main.home"))
